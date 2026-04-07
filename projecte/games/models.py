@@ -14,8 +14,14 @@ class GameDetails(models.Model):
     game = models.OneToOneField(SteamGame, on_delete=models.CASCADE, related_name='details')
 
     description = models.TextField(null=True, blank=True)
-    score = models.FloatField(null=True, blank=True)
-    header_image = models.URLField(null=True, blank=True)
+    description_brief = models.TextField(null=True, blank=True)
+    score = models.IntegerField(null=True, blank=True)
+    header_image = models.URLField()
+
+    developers = models.JSONField(null=True, blank=True)
+    publishers = models.JSONField(null=True, blank=True)
+    photos = models.JSONField(null=True, blank=True)
+    release_date = models.CharField(max_length=100, null=True, blank=True)
 
 class StoreGame(models.Model):
     game = models.ForeignKey(SteamGame, on_delete=models.CASCADE, related_name='ThirdPartyStore_offers')

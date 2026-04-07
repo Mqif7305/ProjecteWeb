@@ -3,6 +3,9 @@ import threading
 
 import requests
 
+from projecte.games.models import SteamGame, GameDetails
+
+
 def getApps(api_key):
     url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?key="
     url += api_key
@@ -61,8 +64,38 @@ def procesarJuego(data, id):
 
     return True
 
+def insertGames(games):
+    for game_data in games:
+        #primero instertamos JuegoSteam
+        steam_obj, created = SteamGame.objects.update_or_create(
+            steam_id=game_data['id'],
+            defaults={
+                'name': game_data['name'],
+                'price': game_data['price'],
+                'url': f"https://store.steampowered.com/app/{game_data['id']}/"
+            }
+        )
+
+        if(not created):
+            print("[error] Couldn't create game")
+
+        #insertamos Gamedetails
+        GameDetails.objects.update_or_create(
+            game=steam_obj,
+            defaults={
+                'description': game_data['description'],
+                'description_brief': game_data['description_brief'],
+                'score': game_data['score'],
+                'header_image': game_data['header_image'],
+                'developers': game_data['developers'],
+                'publishers': game_data['publishers'],
+                'photos': game_data['photos'],
+                'release_date': game_data['release_date'],
+            }
+        )
 
 
 def main():
     apps = getApps(os.getenv('STEAM_API_KEY'))
     games = getGames(apps)
+    insertGames(games)
