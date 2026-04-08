@@ -1,7 +1,6 @@
-import os
 import dotenv
 
-from projecte.games.migrations.src.apis import SteamApi
+from src.apis import SteamApi
 
 if __name__ == '__main__':
     dotenv.load_dotenv()
