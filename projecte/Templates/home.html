@@ -36,7 +36,7 @@
 
 <!-- Barra de buscar -->
 <nav class="navbar navbar-dark px-4">
-    <span class="navbar-brand">🎮 GameStore</span>
+    <span class="navbar-brand">GameStore</span>
     <label>
         <input class="form-control w-25" type="text" placeholder="Search for games...">
     </label>
@@ -50,13 +50,18 @@
         <div class="col-md-3 mb-4">
             <div class="card p-2">
 
-                <img src="{{ game.image }}" class="card-img-top" alt="">
+                <img src="{{ game.details.header_image }}" class="card-img-top" alt="">
 
                 <div class="card-body">
                     <h6>{{ game.name }}</h6>
 
-                    <p class="discount">-{{ game.discount }}%</p>
-                    <p class="price">{{ game.price }}€</p>
+                    {% if game.details.score %}
+                        <p class="score">score: {{ game.details.score }}</p>
+                    {% endif %}
+
+                    <p class="price">{{ game.price }}</p>
+
+                    <!-- Aqui deberíamos meter algun boton que llevase a los detalles del juego -->
                 </div>
 
             </div>
