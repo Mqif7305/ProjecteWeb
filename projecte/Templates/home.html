@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Shop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+        }
+
+        .card {
+            background-color: #1e293b;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .dicount {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .navbar {
+            background-color: #020617;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Barra de buscar -->
+<nav class="navbar navbar-dark px-4">
+    <span class="navbar-brand">🎮 GameStore</span>
+    <label>
+        <input class="form-control w-25" type="text" placeholder="Search for games...">
+    </label>
+</nav>
+
+<!-- Espacio para enseñar ofertas -->
+<div class="container mt-4">
+    <div class="row">
+
+        {% for game in games %}
+        <div class="col-md-3 mb-4">
+            <div class="card p-2">
+
+                <img src="{{ game.image }}" class="card-img-top" alt="">
+
+                <div class="card-body">
+                    <h6>{{ game.name }}</h6>
+
+                    <p class="discount">-{{ game.discount }}%</p>
+                    <p class="price">{{ game.price }}€</p>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+</body>
+</html>
