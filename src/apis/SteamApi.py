@@ -1,5 +1,4 @@
 import os
-import threading
 
 import requests
 
@@ -7,11 +6,16 @@ from projecte.games.models import SteamGame, GameDetails
 
 
 def getApps(api_key):
+    if not api_key:
+        raise ValueError("Missing Steam API key. Set API_KEY_STEAM or STEAM_API_KEY.")
+
     url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?key="
     url += api_key
 
-    response = requests.get(url)
-    return response.json()
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()
+    payload = response.json()
+    return payload.get("response", {}).get("apps", [])
 
 def getGames(apps):
 
@@ -25,7 +29,7 @@ def getGames(apps):
             break
 
         id= str(app["appid"])
-        respone = requests.get(url+id)
+        respone = requests.get(url+id, timeout=15)
         if respone.status_code == 200:
             data = respone.json()
             if procesarJuego(data, id):
@@ -96,6 +100,7 @@ def insertGames(games):
 
 
 def main():
-    apps = getApps(os.getenv('STEAM_API_KEY'))
+    api_key = os.getenv("API_KEY_STEAM") or os.getenv("STEAM_API_KEY")
+    apps = getApps(api_key)
     games = getGames(apps)
     insertGames(games)
