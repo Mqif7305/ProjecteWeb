@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mis Juegos de Steam</title>
+</head>
+<body>
+    <h1>Lista de Juegos ({{ juegos|length }})</h1>
+    <ul>
+        {% for juego in juegos %}
+            <li>
+                <strong>{{ juego.name }}</strong> - {{ juego.price }}
+                <br>
+                <small>ID: {{ juego.steam_id }}</small>
+            </li>
+        {% empty %}
+            <li>No hay juegos en la base de datos.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

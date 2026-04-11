@@ -1,19 +1,25 @@
-# docker-compose.yml
-
-# Docker Compose file -- defines how to run the project's containers
+version: "3.9"
 
 services:
-  # The Django web application
   web:
-    # Build the image using the Dockerfile in the current directory (./Dockerfile)
     build: .
-
-    # Map port 8000 on your machine to port 8000 in the container
-    # Access the app at http://localhost:8000
     ports:
-      - "8001:8000"
-
-    # Mount the current directory into /app in the container
-    # This means code changes on your machine are reflected instantly (live reload)
+      - "8000:8000"
     volumes:
-      - .:/app  # "." = your project folder, "/app" = where it goes inside the container
+      - .:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "uv run python manage.py migrate &&
+             uv run python manage.py runserver 0.0.0.0:8000"
+
+  steam-sync:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    command: >
+      sh -c "uv run python src/SteamApi.py"
