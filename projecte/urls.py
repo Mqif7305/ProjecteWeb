@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from projecte.games import views as game_views
+from projecte.games import views as game_views, views
 
 urlpatterns = [
-    path('', auth_views.LoginView.as_view(template_name='registration/login.html'), name='home'),
+    path('', views.home, name='home'),
+    """path('', auth_views.LoginView.as_view(template_name='registration/login.html'), name='home'),""",
     path('admin/', admin.site.urls),
     path('juegos/', game_views.lista_juegos, name='lista_juegos'),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
