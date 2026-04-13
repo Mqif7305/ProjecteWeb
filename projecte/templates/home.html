@@ -2,44 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Shop</title>
+    <title>Game Price Tracker</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
-            background-color: #0f172a;
+            background: linear-gradient(180deg, #1e1b4b, #0f172a);
             color: white;
         }
 
-        .card {
-            background-color: #1e293b;
-            border: none;
-            transition: transform 0.2s;
+        .header {
+            padding: 40px 20px;
+            text-align: center;
         }
 
-        .card:hover {
-            transform: scale(1.05);
+        .header h1 {
+            font-weight: bold;
         }
 
-        .navbar {
-            background-color: #020617;
-            display: flex;
-            align-items: center;
+        .header p {
+            color: #94a3b8;
         }
 
-        search-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40%;
+        .search-container {
+            position: relative;
+            width: 50%;
+            margin: auto;
         }
 
         .search-input {
             width: 100%;
-            height: 45px;
-            font-size: 1.1rem;
-            border-radius: 8px;
+            height: 55px;
+            border-radius: 12px;
+            border: none;
+            background-color: #1e293b;
+            color: white;
+            padding-left: 20px;
         }
 
         .suggestions-box {
@@ -54,49 +53,94 @@
         .suggestion-item {
             padding: 10px;
             cursor: pointer;
-            color: white;
         }
 
         .suggestion-item:hover {
             background-color: #334155;
         }
 
-        .descrText {
+        .card {
+            background: #2e2a5e;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .game-title {
+            font-weight: bold;
+            font-size: 1.1rem;
             color: white;
+        }
+
+        .price-box {
+            background-color: #1e293b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #cbd5f5;
+        }
+
+        .price {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .btn-deal {
+            margin-top: 15px;
+            width: 100%;
+            background: linear-gradient(90deg, #7c3aed, #9333ea);
+            border: none;
+        }
+
+        .btn-deal:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
 
-<!-- Barra de buscar -->
-<nav class="navbar navbar-dark px-4">
-    <span class="navbar-brand">GameStore</span>
+<!-- Header -->
+<div class="header">
+    <h1>Game Price Tracker</h1>
+    <p>Find the best deals across all stores</p>
 
-    <div class="search-container">
+    <!-- Barra de busqueda -->
+    <div class="search-container mt-4">
         <input id="searchInput" class="form-control search-input" type="text" placeholder="Search for games...">
-
         <div id="suggestions" class="suggestions-box"></div>
     </div>
-</nav>
+</div>
 
 <!-- Espacio para enseñar ofertas -->
 <div class="container mt-4">
     <div class="row">
 
         {% for juego in juegos %}
-        <div class="col-md-3 mb-4">
-            <div class="card p-2">
+        <div class="col-md-4 mb-4">
+            <div class="card">
 
                 <img src="{{ juego.details.header_image }}" class="card-img-top" alt="">
 
                 <div class="card-body">
-                    <p class="descrText">{{ juego.name }}</p>
+                    <p class="game-title">{{ juego.name }}</p>
 
                     {% if juego.details.score %}
-                        <p class="descrText">score: {{ juego.details.score }}</p>
+                        <p style="color:#facc15">score: {{ juego.details.score }}</p>
                     {% endif %}
 
-                    <p class="descrText">{{ juego.price }}</p>
+                    <div class="price-box">
+                        <span>Steam</span>
+                        <span class="float-end price">{{ juego.price }}</span>
+                    </div>
 
                     <!-- Aqui deberíamos meter algun boton que llevase a los detalles del juego -->
                 </div>
