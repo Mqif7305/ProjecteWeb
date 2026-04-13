@@ -21,7 +21,8 @@ from projecte.games import views as game_views, views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    """path('', auth_views.LoginView.as_view(template_name='registration/login.html'), name='home'),""",
+
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='home'),
     path('admin/', admin.site.urls),
     path('juegos/', game_views.lista_juegos, name='lista_juegos'),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

@@ -7,4 +7,4 @@ def lista_juegos(request):
 
 def home(request):
     juegos = SteamGame.objects.all()[:20]
-    return render(request, "games/home.html", {"juegos": juegos})
+    return render(request, "home.html", {"juegos": juegos})
