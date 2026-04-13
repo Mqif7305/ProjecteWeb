@@ -19,7 +19,54 @@ def getGamesBatch():
         response.raise_for_status()
         return response.json()
     except Exception:
-        return {}
+        return None
+
+def procesarJuegos(data):
+    games_to_insert = []
+    count=0
+
+    sorted_apps = sorted(data.items(), key=lambda x: int(x[0]))
+
+    for appid, info in sorted_apps:
+        if len(games_to_insert) >= 500:
+            print("yatta")
+            break
+
+        if count%20 ==0:
+            print(count)
+
+
+        price_raw = info.get("price", 0)
+        price_formatted = f"{int(price_raw) / 100}€"
+
+        if price_formatted == "0":
+            continue
+
+        #porcentaje de votos positivos
+        pos = info.get("positive", 0)
+        neg = info.get("negative", 0)
+        total_votes = pos + neg
+        score_percentage = int((pos / total_votes) * 100) if total_votes > 0 else 0
+
+        #
+
+        game_data = {
+            "id": int(appid),
+            "name": info.get("name"),
+            "price": price_formatted,
+            "description": f"",
+            "description_brief": f"",
+            "score": score_percentage,
+            "header_image": f"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/header.jpg",
+            "developers": [info.get("developer")] if info.get("developer") else [],
+            "publishers": [info.get("publisher")] if info.get("publisher") else [],
+            "photos": [],
+            "release_date": None,
+        }
+        games_to_insert.append(game_data)
+        count = count + 1
+
+    return games_to_insert
 
 def insertGames(games):
     for game_data in games:
@@ -48,45 +95,16 @@ def insertGames(games):
 
 def main():
     data = getGamesBatch()
+
     if not data:
         print("No se han podido obtener datos de SteamSpy.")
         return
 
-    games_to_insert = []
-    # Ordenamos por ID de menor a mayor
-    sorted_apps = sorted(data.items(), key=lambda x: int(x[0]))
+    games = procesarJuegos(data)
 
-    for appid, info in sorted_apps:
-        if len(games_to_insert) >= 100:
-            break
+    insertGames(games)
 
-        # Cálculo del porcentaje de votos positivos
-        pos = info.get("positive", 0)
-        neg = info.get("negative", 0)
-        total_votes = pos + neg
-        score_percentage = int((pos / total_votes) * 100) if total_votes > 0 else 0
-
-        # Formateo de precio
-        price_raw = info.get("price", 0)
-        price_formatted = f"{int(price_raw) / 100}€" if price_raw and int(price_raw) > 0 else "Gratis"
-
-        game_data = {
-            "id": int(appid),
-            "name": info.get("name"),
-            "price": price_formatted,
-            "description": f"Juego popular en Steam. Desarrollado por {info.get('developer')}.",
-            "description_brief": f"Géneros: {info.get('genre')}",
-            "score": score_percentage,
-            "header_image": f"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/header.jpg",
-            "developers": [info.get("developer")] if info.get("developer") else [],
-            "publishers": [info.get("publisher")] if info.get("publisher") else [],
-            "photos": [],
-            "release_date": None,
-        }
-        games_to_insert.append(game_data)
-
-    insertGames(games_to_insert)
-    print(f"Proceso finalizado. Se han procesado {len(games_to_insert)} juegos.")
+    print(f"Proceso finalizado. Se han procesado {len(games)} juegos.")
 
 if __name__ == "__main__":
     main()
