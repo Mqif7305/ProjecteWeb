@@ -24,6 +24,26 @@
 
         .navbar {
             background-color: #020617;
+            display: flex;
+            align-items: center;
+        }
+
+        search-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 45px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+        }
+
+        .descrText {
+            color: white;
         }
     </style>
 </head>
@@ -32,9 +52,12 @@
 <!-- Barra de buscar -->
 <nav class="navbar navbar-dark px-4">
     <span class="navbar-brand">GameStore</span>
-    <label>
-        <input class="form-control w-25" type="text" placeholder="Search for games...">
-    </label>
+
+    <div class="search-container">
+        <label>
+            <input class="form-control search-input" type="text" placeholder="Search for games...">
+        </label>
+    </div>
 </nav>
 
 <!-- Espacio para enseñar ofertas -->
@@ -48,13 +71,13 @@
                 <img src="{{ juego.details.header_image }}" class="card-img-top" alt="">
 
                 <div class="card-body">
-                    <h6>{{ juego.name }}</h6>
+                    <p class="descrText">{{ juego.name }}</p>
 
                     {% if juego.details.score %}
-                        <p class="score">score: {{ juego.details.score }}</p>
+                        <p class="descrText">score: {{ juego.details.score }}</p>
                     {% endif %}
 
-                    <p class="price">{{ juego.price }}</p>
+                    <p class="descrText">{{ juego.price }}</p>
 
                     <!-- Aqui deberíamos meter algun boton que llevase a los detalles del juego -->
                 </div>
