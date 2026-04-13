@@ -22,5 +22,6 @@ services:
     environment:
       - PYTHONPATH=/app
     command: >
-      sh -c "uv run python src/SteamApi.py &&
+      sh -c "uv run python manage.py migrate &&
+      uv run python src/SteamApi.py &&
       uv run python src/GamesAPI.py"
