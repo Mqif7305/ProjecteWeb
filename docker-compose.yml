@@ -13,7 +13,7 @@ services:
       sh -c "uv run python manage.py migrate &&
              uv run python manage.py runserver 0.0.0.0:8000"
 
-  steam-sync:
+  load:
     build: .
     volumes:
       - .:/app
@@ -22,4 +22,5 @@ services:
     environment:
       - PYTHONPATH=/app
     command: >
-      sh -c "uv run python src/SteamApi.py"
+      sh -c "uv run python src/SteamApi.py &&
+      uv run python src/GamesAPI.py"
