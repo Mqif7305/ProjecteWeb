@@ -31,6 +31,3 @@ class StoreGame(models.Model):
 
     price = models.FloatField()
     url = models.URLField()
-
-class WishList(models.Model):
-    game = models.ForeignKey(SteamGame, on_delete=models.CASCADE)

@@ -10,7 +10,8 @@ dotenv.load_dotenv()
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "projecte.settings")
 django.setup()
 
-from projecte.games.models import SteamGame, GameDetails
+from projecte.games.models import SteamGame, GameDetails, StoreGame
+
 
 def getGamesBatch():
     url = "https://steamspy.com/api.php?request=all"
@@ -39,7 +40,7 @@ def procesarJuegos(data):
         price_raw = info.get("price", 0)
         price_formatted = f"{int(price_raw) / 100}€"
 
-        if price_formatted == "0":
+        if price_raw == "0" or price_raw=="0.0":
             continue
 
         #porcentaje de votos positivos
@@ -94,6 +95,10 @@ def insertGames(games):
         )
 
 def main():
+
+    SteamGame.objects.all().delete()
+    GameDetails.objects.all().delete()
+    StoreGame.objects.all().delete()
     data = getGamesBatch()
 
     if not data:
