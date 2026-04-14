@@ -12,8 +12,53 @@
             color: white;
         }
 
+        .navbar-custom {
+            padding: 15px 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .btn-login {
+            background: linear-gradient(90deg, #7c3aed, #9333ea);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:hover {
+            opacity: 0.85;
+            color: white;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid #475569;
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: #7c3aed;
+            color: white;
+        }
+
+        .user-greeting {
+            color: #94a3b8;
+            margin-right: 12px;
+            font-size: 0.9rem;
+        }
+
         .header {
-            padding: 40px 20px;
+            padding: 20px 20px 40px;
             text-align: center;
         }
 
@@ -107,6 +152,16 @@
     </style>
 </head>
 <body>
+
+<!-- Navbar con botón login/logout -->
+<div class="navbar-custom">
+    {% if user.is_authenticated %}
+        <span class="user-greeting">Hola, {{ user.username }}</span>
+        <a href="{% url 'logout' %}" class="btn-logout">Cerrar sesión</a>
+    {% else %}
+        <a href="{% url 'signup' %}" class="btn-login">Login / Register</a>
+    {% endif %}
+</div>
 
 <!-- Header -->
 <div class="header">
