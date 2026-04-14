@@ -2,7 +2,7 @@ uwu
 
 NOMES UNA VEGADA:
 
-    docker compose run --rm steam-sync
+    docker compose up load
 
 Per despres d'una modificacio:
 

@@ -33,15 +33,16 @@ def procesarJuegos(data):
             print("yatta")
             break
 
-        if count%20 ==0:
-            print(count)
-
 
         price_raw = info.get("price", 0)
         price_formatted = f"{int(price_raw) / 100}€"
 
-        if price_raw == "0" or price_raw=="0.0":
+        if price_raw == "0" or price_raw == "0.0" :
             continue
+
+        count = count + 1
+        if count % 20 == 0:
+            print(count)
 
         #porcentaje de votos positivos
         pos = info.get("positive", 0)
@@ -65,7 +66,7 @@ def procesarJuegos(data):
             "release_date": None,
         }
         games_to_insert.append(game_data)
-        count = count + 1
+
 
     return games_to_insert
 
