@@ -39,9 +39,8 @@ def insertarDatos(id, data):
 
     obj, created = StoreGame.objects.update_or_create(
         game=steamGame,
-        external_id=gameID,
         defaults={
-            'store_name':"PENDIENTE"
+            'external_id': gameID
         }
     )
 
@@ -63,9 +62,8 @@ def main():
         if sobrescribir:
             for id in ids2:
                 data = buscar_juego(id)
-                steamGame = SteamGame.objects.filter(steam_id=id)
                 if not data:
-                    GameDetails.objects.filter(game=steamGame[0]).delete()
+                    SteamGame.objects.filter(steam_id=id).delete()
                     deletions += 1
                     print(f"  [!] No se encuentra el juego {id} - {deletions} elementos borrados")
                     continue
@@ -81,7 +79,7 @@ def main():
                 if not StoreGame.objects.filter(game=steamGame[0]).exists():
                     data = buscar_juego(id)
                     if not data:
-                        GameDetails.objects.filter(game=steamGame[0]).delete()
+                        SteamGame.objects.filter(steam_id=id).delete()
                         deletions += 1
                         print(f"  [!] No se encuentra el juego {id} - {deletions} elementos borrados")
                         continue

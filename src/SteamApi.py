@@ -10,7 +10,7 @@ dotenv.load_dotenv()
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "projecte.settings")
 django.setup()
 
-from projecte.games.models import SteamGame, GameDetails, StoreGame
+from projecte.games.models import SteamGame, GameDetails, StoreGame, StoreOffer
 
 
 def getGamesBatch():
@@ -100,6 +100,7 @@ def main():
     SteamGame.objects.all().delete()
     GameDetails.objects.all().delete()
     StoreGame.objects.all().delete()
+    StoreOffer.objects.all().delete()
     data = getGamesBatch()
 
     if not data:

@@ -48,7 +48,7 @@ services:
       - PYTHONPATH=/app
     command: >
       sh -c "uv run python manage.py migrate &&
-      uv run python src/GamesAPI.py"
+      uv run python src/GamesAPI.py 1"
 
   load-api-id:
     build: .

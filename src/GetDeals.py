@@ -3,140 +3,115 @@ import time
 import django
 import requests
 
-# Configuración de Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "projecte.settings")
 django.setup()
 
-from projecte.games.models import StoreGame, SteamGame
+from projecte.games.models import StoreGame, StoreOffer, SteamGame
 
-# Crea una sesión global para reutilizar la conexión TCP
 session = requests.Session()
 
 
-def buscar_juego(ids):
-    urlID = 'https://www.cheapshark.com/api/1.0/games?steamAppID='
-    urlPrices = 'https://www.cheapshark.com/api/1.0/games?id='
+def buscar_deals(batch):
+    url = 'https://www.cheapshark.com/api/1.0/games?ids='
+    ids = ",".join(str(g.external_id) for g in batch)
+
+    r = session.get(url + ids, timeout=15)
+
+    if r.status_code == 429:
+        time.sleep(20)
+        return buscar_deals(batch)
+
+    if r.status_code != 200:
+        raise Exception(f"API error {r.status_code}")
+
+    return r.json()
 
 
-    for id in ids:
-        if id is ids[-1]:
-            urlID = urlID + str(id).strip()
-        else:
-            urlID += str(id).strip() + ","
-
-    response = session.get(urlID, timeout=15)
-
-    if response.status_code == 429:
-        raise Exception(f"  [!] Error API Status: 429, too many requests encontrado.")
-
-    if response.status_code != 200:
-        raise Exception(f"  [!] Error API Status: {response.status_code} para ID {id}")
-
-    response= response.json()
-    IDgames = []
-
-    for i in enumerate(response):
-        IDgame= response.get(i).get('gameID')
-        if not IDgame:
-            continue
-
-        IDgames.append(IDgame)
-
-
-
-
-
-
-
-
-
-
-
-def insertarDatos(id, deals, stores):
+def insertar_deals(store_game, deals, stores):
     if not deals:
-        return
-
-    try:
-        steamGame = SteamGame.objects.get(steam_id=id)
-    except SteamGame.DoesNotExist:
-        print(f"  [!] Error DB: SteamGame ID {id} no existe en tu base de datos.")
         return
 
     creados = 0
     actualizados = 0
 
-    for deal in deals:
-        storeID = deal.get('storeID')
-        storeName = stores.get(storeID)
-
-        # Si la tienda no está en nuestro diccionario de activas, saltamos
-        if not storeName:
+    for d in deals:
+        store_id = d.get('storeID')
+        if store_id == '1':
             continue
 
-        obj, created = StoreGame.objects.update_or_create(
-            game=steamGame,
-            external_id=storeID,
+        store_name = stores.get(store_id)
+        price = float(d.get('price'))
+
+        obj, created = StoreOffer.objects.update_or_create(
+            store_game=store_game,
+            store_id=store_id,
             defaults={
-                'store_name': storeName,
-                'price': deal.get('price'),
-                'url': f""
+                'store_name': store_name,
+                'price': price,
             }
         )
+
         if created:
             creados += 1
         else:
             actualizados += 1
 
-    # Print discreto por cada juego procesado con éxito
-    print(f"  [OK] ID {id}: {creados} nuevos, {actualizados} actualizados.")
+    if creados + actualizados < 1:
+        id_steam = store_game.game.steam_id
+        print(f"  [!] Borrando {id_steam}: No tiene ofertas externas (solo Steam).")
+
+        store_game.game.delete()
+        return
+
+    print(f"[OK] {store_game.external_id}: {creados} nuevos, {actualizados} actualizados")
 
 
 def main():
+    print("iniciando obtencion de ofertas...")
 
-    print("iniciando...")
-    ids = SteamGame.objects.values_list("steam_id", flat=True)
-    size = len(ids)
+    games = list(StoreGame.objects.select_related('game').all())
+    print(f"total juegos: {len(games)}")
 
-    print(f"--- Iniciando proceso para {size} juegos ---")
+    url_store = 'https://www.cheapshark.com/api/1.0/stores'
 
-    urlStore = 'https://www.cheapshark.com/api/1.0/stores'
     try:
-        r_stores = session.get(urlStore).json()
-        stores = {s['storeID']: s['storeName'] for s in r_stores if s['isActive'] == 1}
-        print(f"--- Tiendas cargadas: {len(stores)} activas ---")
+        r = session.get(url_store).json()
+        stores = {s['storeID']: s['storeName'] for s in r if s['isActive'] == 1 and s['storeID'] != '1'}
     except Exception as e:
-        print(f"Error crítico cargando tiendas: {e}")
+        print(f"error tiendas: {e}")
         return
 
-    time.sleep(2)
-
-    batch_size=25
-    batch = []
+    batch_size = 25
     count = 0
 
-    while ids:
-        batch = ids[:batch_size]
-        ids = ids[batch_size:]
+    try:
+        for i in range(0, len(games), batch_size):
+            batch = games[i:i + batch_size]
 
-        try:
-            deals= buscar_juego(batch)
+            deals_data = buscar_deals(batch)
 
-            for idx, deal in enumerate(batch):
-                if deal:
-                    insertarDatos(batch[idx], deal, stores)
+            for g in batch:
+                data = deals_data.get(g.external_id)
+
+                if not data:
+                    print(f"[!] sin datos {g.external_id}")
+                    continue
+
+                insertar_deals(
+                    g,
+                    data.get('deals', []),
+                    stores
+                )
 
             count += 1
-            print(f">> Progreso: {count} batch")
+            print(f"batch {count}")
 
-            time.sleep(10)
+            time.sleep(8)
 
-        except Exception as e:
-            print(f"Error en batch {count + 1}: {e}")
-            continue
+    except Exception as e:
+        print(f"error batch {count}: {e}")
 
-
-
-    print(f"--- Proceso finalizado. Total juegos procesados con ofertas: {count} ---")
+    print("finalizado")
 
 
 if __name__ == "__main__":

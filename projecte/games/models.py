@@ -25,10 +25,24 @@ class GameDetails(models.Model):
 
 
 class StoreGame(models.Model):
-    game = models.ForeignKey(SteamGame, on_delete=models.CASCADE, related_name='ThirdPartyStore_offers')
+    game = models.OneToOneField(SteamGame, on_delete=models.CASCADE, related_name='storegame')
 
-    store_name = models.CharField(max_length=100, null=True, blank=True)
-    external_id = models.CharField(max_length=100)
+    external_id = models.CharField(max_length=100, unique=True)
 
-    price = models.FloatField(null=True, blank=True)
-    url = models.URLField(null=True, blank=True)
+    def __str__(self):
+        return f"{self.game.name} ({self.external_id})"
+
+
+class StoreOffer(models.Model):
+    store_game = models.ForeignKey(StoreGame, on_delete=models.CASCADE, related_name='offers')
+
+    store_id = models.CharField(max_length=50)
+    store_name = models.CharField(max_length=100)
+
+    price = models.FloatField()
+
+    class Meta:
+        unique_together = ('store_game', 'store_id')
+
+    def __str__(self):
+        return f"{self.store_name} - {self.price}"
