@@ -23,11 +23,12 @@ class GameDetails(models.Model):
     photos = models.JSONField(null=True, blank=True)
     release_date = models.CharField(max_length=100, null=True, blank=True)
 
+
 class StoreGame(models.Model):
     game = models.ForeignKey(SteamGame, on_delete=models.CASCADE, related_name='ThirdPartyStore_offers')
 
-    store_name = models.CharField(max_length=100)
+    store_name = models.CharField(max_length=100, null=True, blank=True)
     external_id = models.CharField(max_length=100)
 
-    price = models.FloatField()
-    url = models.URLField()
+    price = models.FloatField(null=True, blank=True)
+    url = models.URLField(null=True, blank=True)

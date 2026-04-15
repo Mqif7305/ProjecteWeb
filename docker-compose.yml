@@ -13,7 +13,7 @@ services:
       sh -c "uv run python manage.py migrate &&
              uv run python manage.py runserver 0.0.0.0:8000"
 
-  load:
+  load-all:
     build: .
     volumes:
       - .:/app
@@ -25,3 +25,51 @@ services:
       sh -c "uv run python manage.py migrate &&
       uv run python src/SteamApi.py &&
       uv run python src/GamesAPI.py"
+
+  load-steam:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    command: >
+      sh -c "uv run python manage.py migrate &&
+      uv run python src/SteamApi.py"
+
+  load-api:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    command: >
+      sh -c "uv run python manage.py migrate &&
+      uv run python src/GamesAPI.py"
+
+  load-api-id:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    command: >
+      sh -c "uv run python manage.py migrate &&
+      uv run python src/GamesAPI.py 2"
+
+  load-api-deal:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    command: >
+      sh -c "uv run python manage.py migrate &&
+      uv run python src/GamesAPI.py 3"
