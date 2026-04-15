@@ -24,7 +24,6 @@ from projecte.games.views import SignUpView
 urlpatterns = [
     path('', game_views.home, name='home'),
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
-    #path('accounts/logout/', LogoutView.as_view(next_page='home'), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('juegos/', game_views.lista_juegos, name='lista_juegos'),
