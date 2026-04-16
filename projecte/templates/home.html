@@ -200,7 +200,9 @@
                         <span class="float-end price">{{ juego.price }}</span>
                     </div>
 
-                    <!-- Aqui deberíamos meter algun boton que llevase a los detalles del juego -->
+                    <a href="{% url 'game_detail' juego.steam_id %}" class="btn btn-deal">
+                        Ver Detalles →
+                    </a>
                 </div>
 
             </div>
@@ -233,12 +235,20 @@
             div.textContent = game.name;
 
             div.addEventListener("click", () => {
-                input.value = game.name;
-                suggestionsBox.innerHTML = "";
+                window.location.href = `/game/${game.steam_id}/`;
             });
 
             suggestionsBox.appendChild(div);
         });
+    });
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            const first = suggestionsBox.firstChild;
+            if (first) {
+                first.click();
+            }
+        }
     });
 </script>
 

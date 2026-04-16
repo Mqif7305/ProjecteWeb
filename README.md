@@ -1,5 +1,3 @@
-uwu
-
 NOMES UNA VEGADA:
 
     docker compose up load

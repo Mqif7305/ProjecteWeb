@@ -1,9 +1,8 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import SteamGame
 
-from django.contrib.auth.forms import UserCreationForm  # Django's built-in signup form
-from django.urls import reverse_lazy                     # like reverse(), but delays evaluation
+from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .forms import CustomUserCreationForm
 
@@ -21,7 +20,14 @@ def search_juegos(request):
     results = list(games.values('steam_id', 'name'))
     return JsonResponse(results, safe=False)
 
+def game_detail(request, id):
+    game = get_object_or_404(SteamGame, steam_id=id)
+    offers = []
+    if hasattr(game, 'storegame'):
+        offers = game.storegame.offers.all().order_by('price')
+    return render(request, "games/details.html", {"game": game, "offers": offers})
+
 class SignUpView(CreateView):
-    form_class = CustomUserCreationForm                  # the form to show (username + password + confirm)
+    form_class = CustomUserCreationForm            # the form to show (username + password + confirm)
     template_name = 'registration/signup.html'     # the HTML template to render
     success_url = reverse_lazy('login')            # after signup, redirect to the login page

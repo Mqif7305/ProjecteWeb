@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib.auth import views as auth_views
-from projecte.games import views as game_views
+from projecte.games import views as game_views, views
 from projecte.games.views import SignUpView
 
 
@@ -27,5 +26,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('juegos/', game_views.lista_juegos, name='lista_juegos'),
+    path('game/<int:id>/', views.game_detail, name='game_detail'),
     path('search/', game_views.search_juegos, name='search_juegos'),
 ]
