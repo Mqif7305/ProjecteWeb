@@ -40,6 +40,7 @@ class StoreOffer(models.Model):
     store_name = models.CharField(max_length=100)
 
     price = models.FloatField()
+    url = models.URLField(null=True, blank=True)
 
     class Meta:
         unique_together = ('store_game', 'store_id')
