@@ -1,20 +1,85 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mis Juegos de Steam</title>
-</head>
-<body>
-    <h1>Lista de Juegos ({{ juegos|length }})</h1>
-    <ul>
+{% extends "base.html" %}
+
+{% block title %}Mis Juegos{% endblock %}
+
+{% block extra_css %}
+<style>
+    .games-wrapper {
+        margin-top: 30px;
+    }
+
+    .games-title {
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: bold;
+    }
+
+    .game-list {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .game-item {
+        background: #2e2a5e;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .game-name {
+        font-weight: bold;
+    }
+
+    .game-price {
+        color: #22c55e;
+        font-weight: bold;
+    }
+
+    .game-id {
+        color: #94a3b8;
+        font-size: 0.8rem;
+    }
+
+    .empty-msg {
+        text-align: center;
+        color: #94a3b8;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container games-wrapper">
+
+    <h2 class="games-title">
+        Lista de Juegos ({{ juegos|length }})
+    </h2>
+
+    <div class="game-list">
+
         {% for juego in juegos %}
-            <li>
-                <strong>{{ juego.name }}</strong> - {{ juego.price }}
-                <br>
-                <small>ID: {{ juego.steam_id }}</small>
-            </li>
+            <div class="game-item">
+                <div>
+                    <div class="game-name">{{ juego.name }}</div>
+                    <div class="game-id">ID: {{ juego.steam_id }}</div>
+                </div>
+
+                <div class="game-price">
+                    {{ juego.price }}
+                </div>
+            </div>
         {% empty %}
-            <li>No hay juegos en la base de datos.</li>
+            <div class="empty-msg">
+                No hay juegos en la base de datos.
+            </div>
         {% endfor %}
-    </ul>
-</body>
-</html>
+
+    </div>
+
+</div>
+
+{% endblock %}

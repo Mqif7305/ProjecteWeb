@@ -1,126 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register - Game Price Tracker</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block title %}Register{% endblock %}
 
-    <style>
-        body {
-            background: linear-gradient(180deg, #1e1b4b, #0f172a);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+{% block extra_css %}
+<style>
+    .auth-wrapper {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .login-card {
-            background: #2e2a5e;
-            border: none;
-            border-radius: 15px;
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-        }
+    .auth-card {
+        background: #2e2a5e;
+        border-radius: 15px;
+        padding: 40px;
+        width: 100%;
+        max-width: 420px;
+    }
 
-        .login-card h2 {
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 8px;
-        }
+    .auth-card h2 {
+        text-align: center;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
 
-        .login-card .subtitle {
-            color: #94a3b8;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-        }
+    .subtitle {
+        color: #94a3b8;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 0.9rem;
+    }
 
-        .form-label {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-        }
+    .form-label {
+        color: #cbd5e1;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
 
-        .form-control {
-            background-color: #1e293b;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            height: 48px;
-            padding-left: 15px;
-        }
+    .form-control {
+        background-color: #1e293b;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        height: 48px;
+        padding-left: 15px;
+    }
 
-        .form-control:focus {
-            background-color: #1e293b;
-            color: white;
-            box-shadow: 0 0 0 2px #7c3aed;
-        }
+    .form-control:focus {
+        background-color: #1e293b;
+        color: white;
+        box-shadow: 0 0 0 2px #7c3aed;
+    }
 
-        .error-msg {
-            background-color: #3b1f2b;
-            color: #f87171;
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
+    .btn-auth {
+        width: 100%;
+        height: 48px;
+        background: linear-gradient(90deg, #7c3aed, #9333ea);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        margin-top: 10px;
+    }
 
-        .btn-login {
-            width: 100%;
-            height: 48px;
-            background: linear-gradient(90deg, #7c3aed, #9333ea);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
+    .error-msg {
+        background-color: #3b1f2b;
+        color: #f87171;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
 
-        .btn-login:hover {
-            opacity: 0.88;
-            color: white;
-        }
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
 
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
+    .back-link:hover {
+        color: white;
+    }
 
-        .back-link:hover {
-            color: white;
-        }
+    .login-link {
+        text-align: center;
+        margin-top: 12px;
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
 
-        .login-link {
-            display: block;
-            text-align: center;
-            margin-top: 12px;
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
+    .login-link a {
+        color: #a78bfa;
+        text-decoration: none;
+    }
 
-        .login-link a {
-            color: #a78bfa;
-            text-decoration: none;
-        }
+    .login-link a:hover {
+        color: white;
+    }
+</style>
+{% endblock %}
 
-        .login-link a:hover {
-            color: white;
-        }
-    </style>
-</head>
-<body>
+{% block content %}
 
-    <div class="login-card">
+<div class="auth-wrapper">
+
+    <div class="auth-card">
+
         <h2>Game Price Tracker</h2>
         <p class="subtitle">Crea tu cuenta</p>
 
@@ -160,7 +149,9 @@
                 {{ form.password2 }}
             </div>
 
-            <button type="submit" class="btn btn-login">Crear cuenta</button>
+            <button type="submit" class="btn btn-auth">
+                Crear cuenta
+            </button>
         </form>
 
         <p class="login-link">
@@ -169,7 +160,9 @@
         </p>
 
         <a href="{% url 'home' %}" class="back-link">← Volver al inicio</a>
+
     </div>
 
-</body>
-</html>
+</div>
+
+{% endblock %}
