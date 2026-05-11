@@ -4,164 +4,154 @@
 
 {% block extra_css %}
 <style>
+    .game-wrapper { margin-top: 50px; max-width: 1000px; color: #f8fafc; }
 
-    .game-wrapper {
-        margin-top: 30px;
+    /* Capçalera */
+    .game-main-header {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 50px;
+        align-items: flex-start;
     }
 
-    .back-btn {
+    .main-img {
+        width: 460px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        flex-shrink: 0;
+    }
+
+    .game-info-top { flex-grow: 1; }
+
+    .game-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+
+    /* Meta informació (Llançament i Devs) */
+    .meta-info p {
+        color: #e2e8f0 !important; /* Gris molt clar i llegible */
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    .meta-info strong { color: #ffffff; }
+
+    .score-badge {
+        color: #facc15;
+        font-size: 1.5rem;
+        font-weight: bold;
+        display: block;
         margin-bottom: 20px;
     }
 
-    .game-header {
-        display: flex;
-        gap: 30px;
-        margin-bottom: 40px;
-        flex-wrap: wrap;
-    }
-
-    .game-image {
-        width: 400px;
-        border-radius: 12px;
-        max-width: 100%;
-    }
-
-    .game-info h1 {
-        font-weight: bold;
-    }
-
-    .meta {
-        color: #94a3b8;
-        margin-top: 10px;
-    }
-
-    .score {
-        color: #facc15;
-        font-size: 1.2rem;
-    }
-
-    .description {
-        margin-top: 30px;
-        line-height: 1.6;
-    }
-
-    .offers {
+    /* Seccions */
+    .section-container {
         margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    .offer-card {
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #ffffff;
+    }
+
+    /* Descripció */
+    .description-content {
+        line-height: 1.8;
+        color: #f1f5f9;
+        font-size: 1.1rem;
+    }
+    .description-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+
+    /* Caixes de preus */
+    .price-box {
         background: #1e293b;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 10px;
+        padding: 20px 30px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
     }
-
-    .best-offer {
-        border: 2px solid #22c55e;
+    .steam-box {
+        background: linear-gradient(90deg, #1b2838, #2a475e);
+        border: 1px solid #66c0f4;
     }
-
-    .best-label {
-        color: #22c55e;
-        font-weight: bold;
-        background-color: rgba(34, 197, 94, 0.15);
-        padding: 3px 6px;
-        border-radius: 6px;
-    }
-
-    .price {
-        color: #22c55e;
-        font-weight: bold;
-    }
-
+    .price-val { color: #22c55e; font-size: 1.7rem; font-weight: 800; }
 </style>
 {% endblock %}
 
 {% block content %}
-
 <div class="container game-wrapper">
 
-    <a href="/" class="btn btn-secondary back-btn">← Volver a Home</a>
+    <div class="game-main-header">
+        <img src="{{ game.details.header_image }}" class="main-img" alt="{{ game.name }}">
 
-    <!-- HEADER -->
-    <div class="game-header">
-
-        {% if game.details %}
-            <img src="{{ game.details.header_image }}" class="game-image">
-        {% endif %}
-
-        <div class="game-info">
-            <h1>{{ game.name }}</h1>
+        <div class="game-info-top">
+            <h1 class="game-title">{{ game.name }}</h1>
 
             {% if game.details.score %}
-                <p class="score">Puntuación: {{ game.details.score }}</p>
+                <span class="score-badge">★ {{ game.details.score }}% Puntuación</span>
             {% endif %}
 
-            <p class="meta">Release date: {{ game.details.release_date }}</p>
+            <div class="meta-info mb-4">
+                <p><strong>Lanzamiento:</strong> {{ game.details.release_date|default:"Proximamente" }}</p>
+                <p><strong>Desarrollador:</strong> {{ game.details.developers|join:", " }}</p>
+            </div>
 
-            {% if game.details.developers %}
-                <p class="meta">
-                    Developers:
-                    {% for dev in game.details.developers %}
-                        {{ dev }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </p>
-            {% endif %}
+            <a href="{% url 'toggle_wishlist' game.steam_id %}"
+               class="btn {% if in_wishlist %}btn-danger{% else %}btn-warning{% endif %} btn-lg px-5 py-3 fw-bold shadow">
+                {% if in_wishlist %} ♥ Quitar de Wishlist {% else %} ♡ Añadir a Wishlist {% endif %}
+            </a>
+        </div>
+    </div>
 
-            {% if game.details.publishers %}
-                <p class="meta">
-                    Publishers:
-                    {% for pub in game.details.publishers %}
-                        {{ pub }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </p>
+    <div class="section-container">
+        <h3 class="section-title">Descripción</h3>
+        <div class="description-content">
+            {% if game.details.description %}
+                {{ game.details.description|safe }}
+            {% else %}
+                <p style="color: #94a3b8; font-style: italic;">No hay descripción detallada disponible. Intenta recargar la página.</p>
             {% endif %}
         </div>
     </div>
 
-    <a href="{% url 'toggle_wishlist' game.steam_id %}"
-       class="btn {% if in_wishlist %}btn-danger{% else %}btn-warning{% endif %}">
-        {% if in_wishlist %}
-            Remove from Wishlist
-        {% else %}
-            Add to Wishlist
-        {% endif %}
-    </a>
-
-    <!-- DESCRIPTION -->
-    <div class="description">
-        <h3>Description</h3>
-
-        {% if game.details.description_brief %}
-            <p>{{ game.details.description_brief|safe }}</p>
-        {% else %}
-            <p>{{ game.details.description|safe }}</p>
-        {% endif %}
+    <div class="section-container">
+        <h3 class="section-title">Oferta Steam:</h3>
+        <div class="price-box steam-box">
+            <span class="h4 mb-0 fw-bold text-white">Steam Official Store</span>
+            <div>
+                <span class="price-val me-4">{{ game.price }}</span>
+                <a href="{{ game.url }}" target="_blank" class="btn btn-primary btn-lg px-4">Comprar</a>
+            </div>
+        </div>
     </div>
 
-    <!-- OFFERS -->
-    <div class="offers">
-        <h3>Available Offers</h3>
-
+    <div class="section-container mb-5">
+        <h3 class="section-title">Otras ofertas:</h3>
         {% if offers %}
             {% for offer in offers %}
-                <div class="offer-card d-flex justify-content-between align-items-center
-                    {% if forloop.first %}best-offer{% endif %}">
-
-                    <div>
-                        {{ offer.store_name }}
-
-                        {% if forloop.first %}
-                            <span class="best-label ms-2">Mejor oferta</span>
-                        {% endif %}
-                    </div>
-
-                    <span class="price">{{ offer.price }}€</span>
+                <div class="price-box">
+                    <span class="h5 mb-0 text-white">{{ offer.store_name }}</span>
+                    <span class="price-val">{{ offer.price }}€</span>
                 </div>
             {% endfor %}
+        {% else %}
+            <p style="color: #94a3b8;">No hay ofertas externas disponibles para este título.</p>
         {% endif %}
-
     </div>
 
 </div>
-
 {% endblock %}

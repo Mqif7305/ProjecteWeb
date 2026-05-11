@@ -44,24 +44,23 @@ def insert_data(id,data):
     description = data.get("detailed_description")
     description_brief = data.get("short_description")
 
+    release_date = data.get("release_date", {}).get("date")
+
     photos = data.get("screenshots")
     p = []
     for photo in photos:
         p.append(photo.get("path_full"))
 
-    steamGame,created = SteamGame.objects.get(steam_id=id)
+    steamGame= SteamGame.objects.get(steam_id=id)
 
-    if not created:
-        return
+    gamedetails= GameDetails.objects.get(game=steamGame)
 
-    gamedetails, created2 = GameDetails.objects.get(game=steamGame)
 
-    if not created2:
-        return
 
     gamedetails.description = description
     gamedetails.description_brief = description_brief
     gamedetails.photos = p
+    gamedetails.release_date = release_date
     gamedetails.save()
 
     return

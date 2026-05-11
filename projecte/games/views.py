@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db import OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -35,8 +36,11 @@ def game_detail(request, id):
         offers = game.storegame.offers.all().order_by('price')
 
     in_wishlist = False
-    if request.user.is_authenticated and hasattr(request.user, 'wishlist'):
-        in_wishlist = request.user.wishlist.games.filter(steam_id=game.steam_id).exists()
+    if request.user.is_authenticated:
+        try:
+            in_wishlist = request.user.wishlist.games.filter(steam_id=game.steam_id).exists()
+        except (Wishlist.DoesNotExist, OperationalError, ProgrammingError):
+            in_wishlist = False
     return render(request, "games/details.html", {"game": game, "offers": offers, "in_wishlist": in_wishlist})
 
 @login_required
