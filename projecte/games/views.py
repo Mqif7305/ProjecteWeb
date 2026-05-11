@@ -65,6 +65,10 @@ def wishlist_view(request):
     wishlist, created = Wishlist.objects.get_or_create(user=request.user)
     return render(request, "games/wishlist.html", {"games": wishlist.games.all()})
 
+@login_required
+def profile_view(request):
+    return render(request,"profile.html")
+
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm            # the form to show (username + password + confirm)
     template_name = 'registration/signup.html'     # the HTML template to render
