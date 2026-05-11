@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+
+from src.GetInfoApi import get_info, insert_data, get_info_games
 from .models import SteamGame, Wishlist
 
 from django.urls import reverse_lazy
@@ -23,6 +25,10 @@ def search_juegos(request):
 
 def game_detail(request, id):
     game = get_object_or_404(SteamGame, steam_id=id)
+
+    if not hasattr(game, 'details') or not game.details.description:
+        get_info_games(id)
+        game.refresh_from_db()
 
     offers = []
     if hasattr(game, 'storegame'):
