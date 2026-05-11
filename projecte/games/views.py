@@ -14,9 +14,16 @@ def lista_juegos(request):
     juegos = SteamGame.objects.all()
     return render(request, 'games/lista.html', {'juegos': juegos})
 
+
 def home(request):
-    juegos = SteamGame.objects.all()[:20]
-    return render(request, "home.html", {"juegos": juegos})
+    millors = SteamGame.objects.filter(details__score__isnull=False).order_by('-details__score')[:6]
+
+    aleatoris = SteamGame.objects.order_by('?')[:30]
+
+    return render(request, "home.html", {
+        "millors_valorats": millors,
+        "aleatoris": aleatoris
+    })
 
 def search_juegos(request):
     query = request.GET.get('q', '')

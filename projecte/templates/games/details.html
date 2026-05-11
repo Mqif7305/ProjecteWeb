@@ -120,8 +120,8 @@
     <div class="section-container">
         <h3 class="section-title">Descripción</h3>
         <div class="description-content">
-            {% if game.details.description %}
-                {{ game.details.description|safe }}
+            {% if game.details.description_brief %}
+                {{ game.details.description_brief|safe }}
             {% else %}
                 <p style="color: #94a3b8; font-style: italic;">No hay descripción detallada disponible. Intenta recargar la página.</p>
             {% endif %}

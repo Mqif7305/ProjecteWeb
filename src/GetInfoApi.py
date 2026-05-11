@@ -22,26 +22,21 @@ def get_info(id , count = 0 ):
 
         if response.status_code == 429:
             if count == 3:
-                print("point0")
                 return None
 
             time.sleep(20)
             return get_info(id, count+1 )
 
         elif response.status_code != 200:
-            print("point1")
             return None
 
         data = response.json()
 
         if data == None or data.get(str(id), {}).get("success")==False:
-            print("point2")
             return None
-        print("point3")
         return data[str(id)]["data"]
 
     except Exception:
-        print("point4")
         return None
 
 
@@ -62,9 +57,6 @@ def insert_data(id,data):
 
     gamedetails= GameDetails.objects.get(game=steamGame)
 
-    print(description)
-    print(description_brief)
-    print(release_date)
 
     gamedetails.description = description
     gamedetails.description_brief = description_brief
@@ -80,7 +72,6 @@ def get_info_games(id):
 
     if data == None:
         print("No games found")
-        print("point5")
         return
 
     insert_data(id, data)

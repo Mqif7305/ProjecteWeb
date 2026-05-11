@@ -47,29 +47,58 @@
         background-color: #334155;
     }
 
+    /* Títols de les seccions */
+    .section-title {
+        margin-top: 40px;
+        margin-bottom: 25px;
+        font-weight: bold;
+        color: #ffffff;
+        border-left: 5px solid #7c3aed;
+        padding-left: 15px;
+    }
+
     .card {
         background: #2e2a5e;
         border-radius: 15px;
         overflow: hidden;
         transition: transform 0.2s;
+        height: 100%; /* Perquè totes siguin igual d'altes */
     }
 
     .card:hover {
         transform: scale(1.03);
     }
 
+    .card-img-top {
+        height: 160px;
+        object-fit: cover;
+    }
+
     .game-title {
         font-weight: bold;
         font-size: 1.1rem;
         color: white;
+        min-height: 2.5rem; /* Per mantenir alineació amb noms llargs */
     }
 
     .price-box {
         background-color: #1e293b;
-        padding: 10px;
+        padding: 8px 12px;
         border-radius: 8px;
         margin-top: 10px;
         color: #cbd5f5;
+        font-size: 0.9rem;
+    }
+
+    /* Estil per a la millor oferta */
+    .best-offer-box {
+        background-color: #064e3b; /* Verd fosc */
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-top: 8px;
+        color: #d1fae5;
+        font-size: 0.9rem;
+        border: 1px solid #059669;
     }
 
     .price {
@@ -87,7 +116,6 @@
 
     .btn-deal:hover {
         opacity: 0.9;
-        color: white !important;
     }
 </style>
 {% endblock %}
@@ -105,30 +133,69 @@
 </div>
 
 <div class="container mt-4">
+
+    <h2 class="section-title">Los mejor valorados</h2>
     <div class="row">
-        {% for juego in juegos %}
+        {% for juego in millors_valorats %}
         <div class="col-md-4 mb-4">
-            <div class="card">
-
+            <div class="card shadow">
                 <img src="{{ juego.details.header_image }}" class="card-img-top">
-
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     <p class="game-title">{{ juego.name }}</p>
 
-                    {% if juego.details.score %}
-                        <p style="color:#facc15">score: {{ juego.details.score }}</p>
-                    {% endif %}
+                    <p style="color:#facc15; font-size: 0.9rem;">★ Score: {{ juego.details.score }}%</p>
 
                     <div class="price-box">
                         <span>Steam</span>
                         <span class="float-end price">{{ juego.price }}</span>
                     </div>
 
-                    <a href="{% url 'game_detail' juego.steam_id %}" class="btn btn-deal">
+                    <div class="best-offer-box">
+                        <span>Mejor Oferta</span>
+                        <span class="float-end price">
+                            {# Agafa la primera oferta externa ordenada per preu #}
+                            {% with best=juego.storegame.offers.all|dictsort:"price"|first %}
+                                {{ best.price }}€
+                            {% endwith %}
+                        </span>
+                    </div>
+
+                    <a href="{% url 'game_detail' juego.steam_id %}" class="btn btn-deal mt-auto">
                         Ver Detalles →
                     </a>
                 </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
+    <h2 class="section-title">También te podría gustar</h2>
+    <div class="row mb-5">
+        {% for juego in aleatoris %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <img src="{{ juego.details.header_image }}" class="card-img-top">
+                <div class="card-body d-flex flex-column">
+                    <p class="game-title">{{ juego.name }}</p>
+
+                    <div class="price-box">
+                        <span>Steam</span>
+                        <span class="float-end price">{{ juego.price }}</span>
+                    </div>
+
+                    <div class="best-offer-box">
+                        <span>Mejor Oferta</span>
+                        <span class="float-end price">
+                            {% with best=juego.storegame.offers.all|dictsort:"price"|first %}
+                                {{ best.price }}€
+                            {% endwith %}
+                        </span>
+                    </div>
+
+                    <a href="{% url 'game_detail' juego.steam_id %}" class="btn btn-deal mt-auto">
+                        Ver Detalles →
+                    </a>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -144,7 +211,6 @@
 
     input.addEventListener("input", async () => {
         const query = input.value;
-
         if (query.length < 2) {
             suggestionsBox.innerHTML = "";
             return;
@@ -152,18 +218,15 @@
 
         const response = await fetch(`/search/?q=${query}`);
         const data = await response.json();
-
         suggestionsBox.innerHTML = "";
 
         data.forEach(game => {
             const div = document.createElement("div");
             div.classList.add("suggestion-item");
             div.textContent = game.name;
-
             div.onclick = () => {
                 window.location.href = `/game/${game.steam_id}/`;
             };
-
             suggestionsBox.appendChild(div);
         });
     });
