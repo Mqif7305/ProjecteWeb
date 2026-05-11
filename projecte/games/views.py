@@ -61,13 +61,9 @@ def toggle_wishlist(request, id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
-def wishlist_view(request):
-    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
-    return render(request, "games/wishlist.html", {"games": wishlist.games.all()})
-
-@login_required
 def profile_view(request):
-    return render(request,"profile.html")
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+    return render(request,"profile.html", {"games": wishlist.games.all()})
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm            # the form to show (username + password + confirm)

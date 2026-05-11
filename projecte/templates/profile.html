@@ -6,7 +6,7 @@
 <style>
 
     .profile-container {
-        max-width: 900px;
+        max-width: 1200px;
         margin: 50px auto;
         padding: 30px;
     }
@@ -129,6 +129,73 @@
             flex-direction: column;
         }
     }
+    /*wishlist styles*/
+    .wishlist-section {
+            margin-top: 50px;
+        }
+
+        .wishlist-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .wishlist-header p {
+            color: #94a3b8;
+        }
+
+        .wishlist-card {
+            max-width: 320px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            height: 100%;
+        }
+
+        .wishlist-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .wishlist-image {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+        }
+
+        .wishlist-body {
+            padding: 15px;
+        }
+
+        .wishlist-title {
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .wishlist-score {
+            color: #facc15;
+        }
+
+        .wishlist-price-box {
+            background-color: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: white;
+        }
+
+        .wishlist-price {
+            float: right;
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            margin-top: 40px;
+            color: #94a3b8;
+        }
 
 </style>
 {% endblock %}
@@ -195,6 +262,79 @@
             <a href="#" class="btn-profile btn-edit">
                 Edit profile
             </a>
+
+        </div>
+
+        <!--WISHLIST-->
+        <hr style="border-color:#334155; margin:40px 0;">
+
+        <div class="wishlist-section">
+
+            <div class="wishlist-header">
+                <h2>My Wishlist</h2>
+                <p>Your saved games</p>
+            </div>
+
+            {% if games %}
+
+                <div class="row mt-4">
+
+                    {% for juego in games %}
+
+                    <div class="col-md-4 mb-4">
+
+                        <div class="wishlist-card">
+
+                            {% if juego.details %}
+                                <img src="{{ juego.details.header_image }}"
+                                     class="wishlist-image"
+                                     alt="{{ juego.name }}">
+                            {% endif %}
+
+                            <div class="wishlist-body">
+
+                                <p class="wishlist-title">
+                                    {{ juego.name }}
+                                </p>
+
+                                {% if juego.details.score %}
+                                    <p class="wishlist-score">
+                                        ⭐ {{ juego.details.score }}
+                                    </p>
+                                {% endif %}
+
+                                <div class="wishlist-price-box">
+
+                                    <span>Steam</span>
+
+                                    <span class="wishlist-price">
+                                        {{ juego.price }}
+                                    </span>
+
+                                </div>
+
+                                <a href="{% url 'game_detail' juego.steam_id %}"
+                                   class="btn btn-details">
+                                    View Details →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-message">
+                    Your wishlist is empty 😢
+                </div>
+
+            {% endif %}
 
         </div>
 

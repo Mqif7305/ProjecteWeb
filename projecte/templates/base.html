@@ -78,22 +78,6 @@
             background: #475569;
             color: white;
         }
-
-        .btn-wishlist {
-            background: linear-gradient(90deg, #f59e0b, #facc15);
-            border: none;
-            color: black;
-            padding: 8px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
-
-        .btn-wishlist:hover {
-            opacity: 0.9;
-            color: black;
-        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -115,8 +99,6 @@
             <span class="user-greeting">
                 Hi, {{ user.username }}!
             </span>
-            
-            <a href="{% url 'wishlist' %}" class="btn-wishlist">Wishlist</a>
 
             <a href="{% url 'profile' %}" class="btn-profile">
                 <i class="bi bi-person-circle"></i>
