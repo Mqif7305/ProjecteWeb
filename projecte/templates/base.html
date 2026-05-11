@@ -41,6 +41,22 @@
             margin-right: 12px;
             font-size: 0.9rem;
         }
+
+        .btn-wishlist {
+            background: linear-gradient(90deg, #f59e0b, #facc15);
+            border: none;
+            color: black;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        .btn-wishlist:hover {
+            opacity: 0.9;
+            color: black;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -51,6 +67,7 @@
 <!-- NAVBAR GLOBAL -->
 <div class="navbar-custom">
     {% if user.is_authenticated %}
+        <a href="{% url 'wishlist' %}" class="btn-wishlist me-3">Wishlist</a>
         <span class="user-greeting">Hola, {{ user.username }}</span>
         <form method="post" action="{% url 'logout' %}" style="display:inline;">
             {% csrf_token %}

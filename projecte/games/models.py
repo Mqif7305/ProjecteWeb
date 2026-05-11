@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -47,3 +48,11 @@ class StoreOffer(models.Model):
 
     def __str__(self):
         return f"{self.store_name} - {self.price}"
+
+class Wishlist(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishlist')
+
+    games = models.ManyToManyField(SteamGame, related_name='wishlist_by', blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} wishlist"

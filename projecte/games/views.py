@@ -1,6 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
-from .models import SteamGame
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import SteamGame, Wishlist
 
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -22,10 +23,30 @@ def search_juegos(request):
 
 def game_detail(request, id):
     game = get_object_or_404(SteamGame, steam_id=id)
+
     offers = []
     if hasattr(game, 'storegame'):
         offers = game.storegame.offers.all().order_by('price')
-    return render(request, "games/details.html", {"game": game, "offers": offers})
+
+    in_wishlist = False
+    if request.user.is_authenticated and hasattr(request.user, 'wishlist'):
+        in_wishlist = request.user.wishlist.games.filter(steam_id=game.steam_id).exists()
+    return render(request, "games/details.html", {"game": game, "offers": offers, "in_wishlist": in_wishlist})
+
+@login_required
+def toggle_wishlist(request, id):
+    game = get_object_or_404(SteamGame, steam_id=id)
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+    if game in wishlist.games.all():
+        wishlist.games.remove(game)
+    else:
+        wishlist.games.add(game)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+def wishlist_view(request):
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+    return render(request, "games/wishlist.html", {"games": wishlist.games.all()})
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm            # the form to show (username + password + confirm)

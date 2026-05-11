@@ -118,6 +118,15 @@
         </div>
     </div>
 
+    <a href="{% url 'toggle_wishlist' game.steam_id %}"
+       class="btn {% if in_wishlist %}btn-danger{% else %}btn-warning{% endif %}">
+        {% if in_wishlist %}
+            Remove from Wishlist
+        {% else %}
+            Add to Wishlist
+        {% endif %}
+    </a>
+
     <!-- DESCRIPTION -->
     <div class="description">
         <h3>Description</h3>

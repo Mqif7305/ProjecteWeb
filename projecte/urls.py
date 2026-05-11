@@ -28,4 +28,6 @@ urlpatterns = [
     path('juegos/', game_views.lista_juegos, name='lista_juegos'),
     path('game/<int:id>/', views.game_detail, name='game_detail'),
     path('search/', game_views.search_juegos, name='search_juegos'),
+    path('wishlist/toggle/<int:id>/', views.toggle_wishlist, name='toggle_wishlist'),
+    path('wishlist/', views.wishlist_view, name='wishlist'),
 ]
