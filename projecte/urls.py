@@ -30,4 +30,6 @@ urlpatterns = [
     path('search/', game_views.search_juegos, name='search_juegos'),
     path('wishlist/toggle/<int:id>/', views.toggle_wishlist, name='toggle_wishlist'),
     path('profile/', views.profile_view, name='profile'),
+    path('comment/edit/<int:pk>/', views.edit_comment, name='edit_comment'),
+    path('comment/delete/<int:pk>/', views.delete_comment, name='delete_comment'),
 ]

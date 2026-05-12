@@ -4,11 +4,11 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from src.GetInfoApi import get_info, insert_data, get_info_games
-from .models import SteamGame, Wishlist
+from .models import SteamGame, Wishlist, Comment
 
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CommentForm
 
 def lista_juegos(request):
     juegos = SteamGame.objects.all()
@@ -48,7 +48,32 @@ def game_detail(request, id):
             in_wishlist = request.user.wishlist.games.filter(steam_id=game.steam_id).exists()
         except (Wishlist.DoesNotExist, OperationalError, ProgrammingError):
             in_wishlist = False
-    return render(request, "games/details.html", {"game": game, "offers": offers, "in_wishlist": in_wishlist})
+
+    comments = game.comments.all()
+
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.game = game
+            comment.save()
+            return redirect('game_detail', id=id)
+
+    else:
+        form = CommentForm()
+
+    context = {
+        "game": game,
+        "offers": offers,
+        "in_wishlist": in_wishlist,
+        "comments": comments,
+        "form": form,
+    }
+    return render(request, "games/details.html", context)
 
 @login_required
 def toggle_wishlist(request, id):
@@ -64,6 +89,38 @@ def toggle_wishlist(request, id):
 def profile_view(request):
     wishlist, created = Wishlist.objects.get_or_create(user=request.user)
     return render(request,"profile.html", {"games": wishlist.games.all()})
+
+@login_required
+def edit_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if comment.user != request.user:
+        return redirect('game_detail', id=comment.game.steam_id)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('game_detail', id=comment.game.steam_id)
+    else:
+        form = CommentForm(instance=comment)
+
+    return render(request, "games/edit_comment.html", {
+        "form": form,
+        "comment": comment
+    })
+
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if comment.user == request.user:
+        game_id = comment.game.steam_id
+        comment.delete()
+        return redirect('game_detail', id=game_id)
+
+    return redirect('game_detail', id=comment.game.steam_id)
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm            # the form to show (username + password + confirm)
