@@ -86,14 +86,14 @@ def main():
 
                     print(f"  [+] {count} -Iniciando proceso ID {id}")
                     insertarDatos(id, data)
-                    time.sleep(5)
+                    time.sleep(6)
                     count += 1
 
     except Exception as e:
         print(f"Error cargar juegos: \n {e}")
 
 
-    print(f"--- Proceso finalizado. Total juegos procesados con ofertas:  ---")
+    print(f"--- Proceso finalizado. Total juegos procesados con ofertas: {SteamGame.objects.count()} ---")
 
 
 if __name__ == "__main__":
