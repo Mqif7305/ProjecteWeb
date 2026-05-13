@@ -150,7 +150,7 @@
                         <span class="float-end price">{{ juego.price }}</span>
                     </div>
 
-                    <div class="best-offer-box">
+                    <div class="best-offer-box mb-3">
                         <span>Mejor Oferta</span>
                         <span class="float-end price">
                             {# Agafa la primera oferta externa ordenada per preu #}
@@ -183,7 +183,7 @@
                         <span class="float-end price">{{ juego.price }}</span>
                     </div>
 
-                    <div class="best-offer-box">
+                    <div class="best-offer-box mb-3">
                         <span>Mejor Oferta</span>
                         <span class="float-end price">
                             {% with best=juego.storegame.offers.all|dictsort:"price"|first %}
