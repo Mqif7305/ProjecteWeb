@@ -1,0 +1,15 @@
+Users to test the login:
+1-
+    username: userTester1
+    Email: tester1@gmail.com
+    Password: Bayonetta1
+
+2-
+    username: userTester2
+    Email: tester2@gmail.com
+    Password: Bayonetta2
+
+Admin user to test:
+    username: admin
+    Email: test@gmail.com
+    Password: admin1234
